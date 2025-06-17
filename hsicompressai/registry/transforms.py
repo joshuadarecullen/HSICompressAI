@@ -32,7 +32,7 @@ from typing import Callable, Dict, Type, TypeVar
 import torch_geometric.transforms
 import torchvision.transforms
 
-from compressai.typing import TTransform
+from hsicompressai.typing import TTransform
 
 __all__ = [
     "TRANSFORMS",

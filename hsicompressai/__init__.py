@@ -1,4 +1,4 @@
-from compressai import (
+from hsicompressai import (
     callbacks,
     datamodules,
     datasets,
@@ -12,6 +12,8 @@ from compressai import (
     optimizers,
     registry,
     transforms,
+    typing,
+    utils,
     zoo,
 )
 
@@ -30,5 +32,7 @@ __all__ = [
     "optimizers",
     "registry",
     "transforms",
+    "typing",
+    "utils",
     "zoo",
     ]

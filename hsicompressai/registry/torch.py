@@ -32,7 +32,7 @@ from typing import Callable, Dict, Type, TypeVar
 from torch import optim
 from torch.optim import lr_scheduler
 
-from compressai.typing import (
+from hsicompressai.typing import (
     TCriterion,
     TDataset,
     TModel,
