@@ -1,10 +1,13 @@
 from torch import nn
 from mamba_ssm import Mamba
 
+__all__ = [
+        "SpectralMamba",
+        ]
 
 class SpectralMamba(nn.Module):
     """
-    This block assumes you are passing in tokenised sequences
+    This block assumes the input is tokenised properly.
     """
 
     def __init__(self,

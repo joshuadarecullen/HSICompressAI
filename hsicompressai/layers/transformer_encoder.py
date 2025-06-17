@@ -6,6 +6,13 @@ from torch import Tensor
 
 from typing import Union, Optional
 
+__all__ = [
+        "MLP_Block",
+        "Attention",
+        "LayerNormalise",
+        "Residual",
+        "Transformer",
+        ]
 
 class MLP_Block(nn.Module):
     def __init__(self,
