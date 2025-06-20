@@ -5,14 +5,16 @@ from .hycot import HyperspectralCompressionTransformer
 from .mambacomp import MambaHSICompression
 from .hyperprior_autoencoder import HyperpriorAutoencoderBase
 from .sscnet import SpectralSignalsCompressorNetwork
+from .src-model import ScalableReduceComplexityEntropyModel
 
 
 __all__ = [
     "ConvolutionalAutoencoder1D",
-    "ModifiedConvolutionalAutoencoder1D",
     "ConvolutionalAutoencoder3D",
+    "HyperpriorAutoencoderBase",
     "HyperspectralCompressionTransformer",
     "MambaHSICompression",
-    "HyperpriorAutoencoderBase",
+    "ModifiedConvolutionalAutoencoder1D",
     "SpectralSignalsCompressorNetwork",
+    "ScalableReduceComplexityEntropyModel",
     ]

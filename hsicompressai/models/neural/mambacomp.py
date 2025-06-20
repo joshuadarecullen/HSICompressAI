@@ -5,8 +5,8 @@ from torch import nn
 from einops import rearrange, repeat
 
 from hsicompressai.layers import SpectralMamba
-from hsicompressai.latent_codec.base import LatentCodec
-from hsicompressai import registry.register_model
+from hsicompressai.latent_codec import LatentCodec
+from hsicompressai.registry import register_model
 
 class MLPDecoder(nn.Module):
     def __init__(self,
@@ -79,7 +79,7 @@ class PatchEmbedding(nn.Module):
 
 '''
 
-@register_model("CAE1D")
+@register_model("MambaComp")
 class MambaHSICompression(LatentCodec):
     def __init__(self,
                  mamba_params: dict,

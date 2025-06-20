@@ -1,6 +1,7 @@
 from torch import nn
 
-from metrics import ssim
+from hsicompressai.metrics import ssim
+from hsicompressai.registry import register_criterion
 
 @register_criterion("StructuralSimilarityLoss")
 class StructuralSimilarityLoss(nn.Module):

@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 
 from pytorch_msssim import ms_ssim
+from hsicompressai.registry import register_criterion
 
 @register_criterion("RateDistortionLoss")
 class RateDistortionLoss(nn.Module):

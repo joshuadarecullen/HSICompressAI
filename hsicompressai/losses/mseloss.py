@@ -1,7 +1,8 @@
 from torch import nn
 
-from metrics import mse
+from hsicompressai.metrics import mse
 
+from hsicompressai.registry import register_criterion
 
 @register_criterion("MeanSquaredErrorLoss")
 class MeanSquaredErrorLoss(nn.Module):

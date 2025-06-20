@@ -1,7 +1,7 @@
 from torch import nn
 
-from hsicompressai.latent_codec.base import LatentCodec
-from hsicompressai import registry.register_model
+from hsicompressai.latent_codec import LatentCodec
+from hsicompressai.registry import register_model
 
 
 def sscnet_cr4(src_channels=202):

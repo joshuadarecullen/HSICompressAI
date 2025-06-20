@@ -3,8 +3,8 @@ import torch.nn.functional as f
 
 from torch import nn
 
-from hsicompressai.latent_codec.base import LatentCodec
-from hsicompressai import registry.register_model
+from hsicompressai.latent_codec import LatentCodec
+from hsicompressai.registry import register_model
 
 @register_model("CAE1D")
 class ConvolutionalAutoencoder1D(LatentCodec):

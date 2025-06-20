@@ -34,7 +34,7 @@ class _HyperpriorAutoencoderBase(CompressionModel):
     This base class wraps a number of utility functions for working with
     Balle-style compression autoencoders implemented in the style of
     CompressAI, such as parameter collection and device management. Users are
-    expected to subclass this calss before writing the appropriate PyTorch
+    expected to subclass this class before writing the appropriate PyTorch
     operations.
     """
 

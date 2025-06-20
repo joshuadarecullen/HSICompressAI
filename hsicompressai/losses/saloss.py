@@ -1,6 +1,7 @@
 from torch import nn
 
-from metrics import sa
+from hsicompressai.metrics import sa
+from hsicompressai.registry import register_criterion
 
 @register_criterion("SpectralAngleLoss")
 class SpectralAngleLoss(nn.Module):

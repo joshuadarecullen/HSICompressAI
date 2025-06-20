@@ -6,9 +6,9 @@ from torch import nn
 from einops import rearrange, repeat
 
 from hsicompressai.layers import Transformer
-from hsicompressai.latent_codec.base import LatentCodec
+from hsicompressai.latent_codec import LatentCodec
 
-from hsicompressai import registry.register_model
+from hsicompressai.registry import register_model
 
 
 def hycot_cr4(src_channels=202):

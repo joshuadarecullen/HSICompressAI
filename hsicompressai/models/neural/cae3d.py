@@ -1,8 +1,8 @@
 from torch import nn
 import torch.nn.functional as f
 
-from hsicompressai.latent_codec.base import LatentCodec
-from hsicompressai import registry.register_model
+from hsicompressai.latent_codec import LatentCodec
+from hsicompressai.registry import register_model
 
 def cae3d_cr4(src_channels=202):
     return ConvolutionalAutoencoder3D(src_channels=src_channels, latent_channels=64)
