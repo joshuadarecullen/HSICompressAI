@@ -8,6 +8,9 @@ from .torch import (
     TModule,
     TOptimizer,
     TScheduler,
+    PLModule,
+    PLDataModule,
+    PLCallback,
 )
 
 __all__ = [
@@ -19,6 +22,9 @@ __all__ = [
     "TOptimizer",
     "TScheduler",
     "TTransform",
+    "PLModule",
+    "PLDataModule",
+    "PLCallback",
 ]
 
 TTransform = Callable

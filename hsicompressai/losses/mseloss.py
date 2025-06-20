@@ -3,6 +3,7 @@ from torch import nn
 from metrics import mse
 
 
+@register_criterion("MeanSquaredErrorLoss")
 class MeanSquaredErrorLoss(nn.Module):
     def __init__(self):
         super(MeanSquaredErrorLoss, self).__init__()

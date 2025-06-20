@@ -2,7 +2,7 @@ from torch import nn
 
 from metrics import ssim
 
-
+@register_criterion("StructuralSimilarityLoss")
 class StructuralSimilarityLoss(nn.Module):
     def __init__(self, data_range=1.0, channels=202):
         super(StructuralSimilarityLoss, self).__init__()

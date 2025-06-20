@@ -1,6 +1,7 @@
 from torch import nn
 
 from hsicompressai.latent_codec.base import LatentCodec
+from hsicompressai import registry.register_model
 
 
 def sscnet_cr4(src_channels=202):
@@ -19,6 +20,7 @@ def sscnet_cr32(src_channels=202):
     return SpectralSignalsCompressorNetwork(src_channels, target_compression_ratio=32)
 
 
+@register_model("SSCNet")
 class SpectralSignalsCompressorNetwork(LatentCodec):
     """
     Title:
@@ -169,7 +171,7 @@ if __name__ == '__main__':
 
     latent_tensor = model.compress(in_tensor)
     print("latent shape:\t\t", latent_tensor.shape)
-    
+
     out_tensor = model(in_tensor)
     print("out shape:\t\t", out_tensor.shape)
 

@@ -4,6 +4,8 @@ import torch.nn.functional as f
 from torch import nn
 
 from hsicompressai.latent_codec.base import LatentCodec
+from hsicompressai import registry.register_model
+
 
 
 def cae1d_cr4(src_channels=202):
@@ -22,6 +24,7 @@ def cae1d_cr32(src_channels=202):
     return ModifiedConvolutionalAutoencoder1D(src_channels=src_channels, target_bpppc=1)
 
 
+@register_model("CAE1DM")
 class ModifiedConvolutionalAutoencoder1D(LatentCodec):
     """
     Comment:

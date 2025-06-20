@@ -1,9 +1,11 @@
 from torch import nn
 from mamba_ssm import Mamba
 
+
 __all__ = [
         "SpectralMamba",
         ]
+
 
 class SpectralMamba(nn.Module):
     """

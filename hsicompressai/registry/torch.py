@@ -39,6 +39,9 @@ from hsicompressai.typing import (
     TModule,
     TOptimizer,
     TScheduler,
+    PLModule,
+    PLDataModule,
+    PLCallback,
 )
 
 CRITERIONS: Dict[str, Callable[..., TCriterion]] = {}
@@ -52,12 +55,19 @@ SCHEDULERS: Dict[str, Callable[..., TScheduler]] = {
     k: v for k, v in lr_scheduler.__dict__.items() if k[0].isupper()
 }
 
+PLMODULES: Dict[str, Callable[..., PLModule]] = {}
+PLDATAMODULES: Dict[str, Callable[..., PLDataModule]] = {}
+PLCALLBACKS: Dict[str, Callable[..., PLCallback]] = {}
+
 TCriterion_b = TypeVar("TCriterion_b", bound=TCriterion)
 TDataset_b = TypeVar("TDataset_b", bound=TDataset)
 TModel_b = TypeVar("TModel_b", bound=TModel)
 TModule_b = TypeVar("TModule_b", bound=TModule)
 TOptimizer_b = TypeVar("TOptimizer_b", bound=TOptimizer)
 TScheduler_b = TypeVar("TScheduler_b", bound=TScheduler)
+PLModule_b = TypeVar("PLModule_b", bound=PLModule)
+PLDataModule_b = TypeVar("PLDataModule_b", bound=PLDataModule)
+PLCallback_b = TypeVar("PLDataModule_b", bound=PLCallback)
 
 
 def register_criterion(name: str):
@@ -118,3 +128,24 @@ def register_scheduler(name: str):
         return cls
 
     return decorator
+
+def register_pldatamodule(name: str):
+    """Decorator for registering a Pytorch LighningDataModule."""
+
+    def decorator(cls: Type[PLDataModule_b]) -> Type[PLDataModule_b]:
+        PLDATAMODULES[name] = cls
+        return cls
+
+def register_plmodule(name: str):
+    """Decorator for registering a Pytorch LighningModule."""
+
+    def decorator(cls: Type[PLModule_b]) -> Type[PLModule_b]:
+        PLMODULES[name] = cls
+        return cls
+
+def register_plcallback(name: str):
+    """Decorator for registering a Pytorch Callback."""
+
+    def decorator(cls: Type[PLCallback_b]) -> Type[PLCallback_b]:
+        PLCALLBACKS[name] = cls
+        return cls

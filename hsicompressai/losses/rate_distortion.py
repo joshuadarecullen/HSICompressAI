@@ -5,7 +5,7 @@ import torch.nn as nn
 
 from pytorch_msssim import ms_ssim
 
-
+@register_criterion("RateDistortionLoss")
 class RateDistortionLoss(nn.Module):
     """Custom rate distortion loss with a Lagrangian parameter."""
 

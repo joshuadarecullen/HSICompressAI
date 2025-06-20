@@ -2,11 +2,13 @@ from torch import Tensor, cat, nn
 import torch.nn.functional as F
 import torch
 
+
 __all__ = [
         "MHSA3D",
         "Het3DConv",
         "HetConv",
         ]
+
 
 class MHSA3D(nn.Module):
 
@@ -49,6 +51,7 @@ class MHSA3D(nn.Module):
         out = self.project_out(torch.matmul(attn, v).reshape(B, T, -1, H, W))
 
         return out
+
 
 class Het3DConv(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, groups=4, ratio=0.5):

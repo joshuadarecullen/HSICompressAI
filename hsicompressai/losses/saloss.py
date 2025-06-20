@@ -2,7 +2,7 @@ from torch import nn
 
 from metrics import sa
 
-
+@register_criterion("SpectralAngleLoss")
 class SpectralAngleLoss(nn.Module):
     def __init__(self):
         super(SpectralAngleLoss, self).__init__()
