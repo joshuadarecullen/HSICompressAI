@@ -1,0 +1,4 @@
+reconstruct:
+  _target_: hsicompressai.callbacks.reconstructor.Reconstructor
+  reconstruct_step: 500
+  perc_recon: 0.25

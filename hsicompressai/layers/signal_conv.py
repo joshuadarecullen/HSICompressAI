@@ -2,14 +2,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from typing import Tuple, Union
-
+# from torch.nn.modules.utils import _ntuple
+import math
 
 __all__ = [
         "SignalConv1D",
         "SignalConv2D",
-        "SignalConv3D"
+        "SignalConv3D",
         ]
-
 
 class SignalConvND(nn.Module):
     def __init__(
@@ -27,8 +27,8 @@ class SignalConvND(nn.Module):
         super().__init__()
         assert ndim in [1, 2, 3], f"Unsupported dimension: {ndim}"
         self.ndim = ndim
-        self.stride = self._to_tuple(stride, ndim)
         self.kernel_size = self._to_tuple(kernel_size, ndim)
+        self.stride = self._to_tuple(stride, ndim)
         self.padding_mode = padding.lower()
         self.transpose = transpose
         self.activation = activation
@@ -42,13 +42,23 @@ class SignalConvND(nn.Module):
             (3, True): nn.ConvTranspose3d,
         }[(ndim, transpose)]
 
-        self.conv = Conv(
-            in_channels,
-            out_channels,
-            self.kernel_size,
-            stride=self.stride,
-            bias=bias,
-        )
+        if self.transpose:
+            self.conv = Conv(
+                in_channels,
+                out_channels,
+                self.kernel_size,
+                stride=self.stride,
+                bias=bias,
+                **self._get_transpose_padding()
+            )
+        else:
+            self.conv = Conv(
+                in_channels,
+                out_channels,
+                self.kernel_size,
+                stride=self.stride,
+                bias=bias,
+            )
 
         # Xavier uniform like TensorFlow
         nn.init.xavier_uniform_(self.conv.weight)
@@ -56,19 +66,36 @@ class SignalConvND(nn.Module):
             nn.init.zeros_(self.conv.bias)
 
     def _to_tuple(self, val, ndim):
+        """
+        Returns correct tuple shape for kernel and stride given the
+        type of conv. E.g it would return for Conv2d: kernel=(k, k),
+        Conv1d=(k)
+        """
         return (val,) * ndim if isinstance(val, int) else val
 
     def _get_pad(self):
+        """
+        Returns
+        """
         return tuple(
             max(k - s, 0) for k, s in zip(self.kernel_size, self.stride)
-        )
+            )
+
+    def _get_transpose_padding(self) -> Tuple[int, int]:
+        """
+        Returns (padding, output_padding) needed for ConvTranspose2d
+        to double size for stride=2, or preserve size for stride=1.
+        Only works for odd kernel for preserving when stride=1, needs fixing
+        """
+        padding = math.ceil((self.kernel_size[0] - self.stride[0]) / 2)
+        output_padding = self.stride[0] + 2 * padding - self.kernel_size[0]
+        return {'padding': padding,
+                'output_padding': output_padding,}
 
     def _pad_input(self, x: torch.Tensor, pad: Tuple[int]) -> torch.Tensor:
         # Reverse order and split each dim into (before, after)
-        pad_list = []
-        for p in reversed(pad):
-            pad_list.extend([p // 2, p - p // 2])
-
+        pad_list = [[p//2, p-p//2] for p in reversed(pad)]
+        pad_list = [p for x in pad_list for p in x]
         return F.pad(x, pad_list, mode="constant" if self.padding_mode == "same" else self.padding_mode)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -85,6 +112,7 @@ class SignalConvND(nn.Module):
 def _conv_class_factory(name: str, ndim: int):
     """Create a subclass of SignalConvND with a fixed ndim."""
     def __init__(self, *args, **kwargs):
+        # Now pass the fixed ndim and the remaining args/kwargs to the superclass
         super(cls, self).__init__(ndim=ndim, *args, **kwargs)
 
     cls = type(name, (SignalConvND,), {

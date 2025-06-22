@@ -129,6 +129,7 @@ def register_scheduler(name: str):
 
     return decorator
 
+
 def register_pldatamodule(name: str):
     """Decorator for registering a Pytorch LighningDataModule."""
 
@@ -136,12 +137,14 @@ def register_pldatamodule(name: str):
         PLDATAMODULES[name] = cls
         return cls
 
+
 def register_plmodule(name: str):
     """Decorator for registering a Pytorch LighningModule."""
 
     def decorator(cls: Type[PLModule_b]) -> Type[PLModule_b]:
         PLMODULES[name] = cls
         return cls
+
 
 def register_plcallback(name: str):
     """Decorator for registering a Pytorch Callback."""

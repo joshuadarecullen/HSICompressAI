@@ -1,0 +1,4 @@
+defaults:
+  - hsy11-default
+
+dataset_mode: "hard"

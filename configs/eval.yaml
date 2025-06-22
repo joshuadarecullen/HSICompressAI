@@ -1,0 +1,19 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - data: hys11-easy # choose datamodule with `test_dataloader()` for evaluation
+  - model: mamba
+  - callbacks: callback_test
+  - logger: wandb
+  - trainer: gpu
+  - paths: default
+  - extras: default
+  - hydra: default
+
+task_name: "eval"
+
+tags: ["dev"]
+
+# passing checkpoint path is necessary for evaluation
+ckpt_path: ${paths.log_dir}train/runs/mamba-16pe-32-pd-lr4/checkpoints/epoch_1593.ckpt

@@ -1,0 +1,2 @@
+metrics:
+  _target_: hsicompress.callbacks.metrics.Metrics

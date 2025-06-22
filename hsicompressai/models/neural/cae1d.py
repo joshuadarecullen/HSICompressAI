@@ -3,7 +3,7 @@ import torch.nn.functional as f
 
 from torch import nn
 
-from hsicompressai.latent_codec import LatentCodec
+from hsicompressai.latent_codecs import LatentCodec
 from hsicompressai.registry import register_model
 
 @register_model("CAE1D")

@@ -1,0 +1,48 @@
+_target_: hsicompress.datamodules.hsn11_module.HSN11LitModule
+
+net:
+  _target_: hsicompressai.models.neural.mamba.MambaHSICompression
+  metadata_path: "data/metadata.yaml"
+  dynamic_embed_params: 
+    wave_dim: 128
+    num_latent_tokens: 128
+    patch_size: 1
+    embed_dim: 512
+    # is_decoder: True
+  mamba_params:
+    use_residual: True
+    d_state: 16
+    d_conv: 4
+    expand: 2
+    group_num: 64
+  dim: 64
+  src_channels: 202
+  target_compression_ratio: 4
+  hidden_dim: 1024
+  num_token: 4
+  num_mamba_layers: 8
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0001
+  weight_decay: 0.0
+
+scheduler: Null
+
+  # _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  # _partial_: true
+  # mode: min
+  # factor: 0.1
+  # patience: 30
+
+criterion:
+  _target_: torch.nn.MSELoss
+
+state_dict: Null
+
+# frozen: False
+
+# compile model for faster training with pytorch 2.0
+compile: false
+

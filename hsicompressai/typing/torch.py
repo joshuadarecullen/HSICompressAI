@@ -18,4 +18,4 @@ TScheduler = Union[ReduceLROnPlateau, _LRScheduler]
 
 PLModule = LightningModule
 PLDataModule = LightningDataModule
-PLCallbacks = PLCallbacks
+PLCallback = Callback

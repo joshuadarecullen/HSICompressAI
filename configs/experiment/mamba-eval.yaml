@@ -1,0 +1,42 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /data: hys11-easy
+  - override /model: mamba
+  - override /callbacks: callback_test
+  - override /trainer: gpu
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["easy", "mamba"]
+
+seed: 1
+
+trainer:
+  min_epochs: 4
+  max_epochs: 2000
+  gradient_clip_val: 0.5
+  devices: 1
+
+ckpt_path: "/home/jd983/Documents/phd/code/spatio-spectral-hsi/logs/train/runs/mamba-16pe-32-pd-lr4/checkpoints/epoch_1593.ckpt"
+
+model:
+  net:
+    target_compression_ratio: 4
+    num_mamba_layers: 8
+
+  compile: false
+
+# data:
+#   batch_size: 64
+
+logger:
+  wandb:
+    tags: ${tags}
+    group: "Mamba"
+  aim:
+    experiment: "test"

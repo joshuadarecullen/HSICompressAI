@@ -1,5 +1,9 @@
 import torch
 
+__all__ = [
+        "range_adaptive_normalization"
+        ]
+
 def range_adaptive_normalization(x: torch.Tensor) -> torch.Tensor:
     """
     Applies range-adaptive normalization to a tensor, per channel.
@@ -90,37 +94,37 @@ def range_adaptive_normalization(x: torch.Tensor) -> torch.Tensor:
 
 # Example Usage:
 
-# 1. For a single image (Channels, Height, Width)
-image = torch.randint(0, 65536, (3, 256, 256)).float() # Example 16-bit image (0-65535)
-normalized_image, min_vals, max_vals = range_adaptive_normalization(image)
+# # 1. For a single image (Channels, Height, Width)
+# image = torch.randint(0, 65536, (3, 256, 256)).float() # Example 16-bit image (0-65535)
+# normalized_image, min_vals, max_vals = range_adaptive_normalization(image)
 
-print(f"Original Image Shape: {image.shape}")
-print(f"Normalized Image Shape: {normalized_image.shape}")
-print(f"Min values per channel: {min_vals}")
-print(f"Max values per channel: {max_vals}")
-print(f"Normalized image min: {normalized_image.min()}, max: {normalized_image.max()}")
-print("-" * 30)
+# print(f"Original Image Shape: {image.shape}")
+# print(f"Normalized Image Shape: {normalized_image.shape}")
+# print(f"Min values per channel: {min_vals}")
+# print(f"Max values per channel: {max_vals}")
+# print(f"Normalized image min: {normalized_image.min()}, max: {normalized_image.max()}")
+# print("-" * 30)
 
-# 2. For a batch of images (Batch_Size, Channels, Height, Width)
-batch_images = torch.randint(0, 65536, (4, 3, 128, 128)).float()
-normalized_batch, batch_min_vals, batch_max_vals = range_adaptive_normalization(batch_images)
+# # 2. For a batch of images (Batch_Size, Channels, Height, Width)
+# batch_images = torch.randint(0, 65536, (4, 3, 128, 128)).float()
+# normalized_batch, batch_min_vals, batch_max_vals = range_adaptive_normalization(batch_images)
 
-print(f"Original Batch Shape: {batch_images.shape}")
-print(f"Normalized Batch Shape: {normalized_batch.shape}")
-print(f"Min values per channel (across batch): {batch_min_vals}")
-print(f"Max values per channel (across batch): {batch_max_vals}")
-print(f"Normalized batch min: {normalized_batch.min()}, max: {normalized_batch.max()}")
-print("-" * 30)
+# print(f"Original Batch Shape: {batch_images.shape}")
+# print(f"Normalized Batch Shape: {normalized_batch.shape}")
+# print(f"Min values per channel (across batch): {batch_min_vals}")
+# print(f"Max values per channel (across batch): {batch_max_vals}")
+# print(f"Normalized batch min: {normalized_batch.min()}, max: {normalized_batch.max()}")
+# print("-" * 30)
 
-# Special case: All values in a band are the same (MIN_b == MAX_b)
-# This will test the '+1' and clamp for division by zero.
-test_tensor_same_values = torch.tensor([
-    [[[10.0, 10.0], [10.0, 10.0]], [[20.0, 20.0], [20.0, 20.0]]],
-    [[[10.0, 10.0], [10.0, 10.0]], [[20.0, 20.0], [20.0, 20.0]]]
-]).float() # Shape (B=2, C=2, H=2, W=2)
+# # Special case: All values in a band are the same (MIN_b == MAX_b)
+# # This will test the '+1' and clamp for division by zero.
+# test_tensor_same_values = torch.tensor([
+#     [[[10.0, 10.0], [10.0, 10.0]], [[20.0, 20.0], [20.0, 20.0]]],
+#     [[[10.0, 10.0], [10.0, 10.0]], [[20.0, 20.0], [20.0, 20.0]]]
+# ]).float() # Shape (B=2, C=2, H=2, W=2)
 
-normalized_test, test_min, test_max = range_adaptive_normalization(test_tensor_same_values)
-print(f"Test tensor (same values per channel) normalized: \n{normalized_test}")
-print(f"Test min values: {test_min}")
-print(f"Test max values: {test_max}")
-print(f"Normalized test min: {normalized_test.min()}, max: {normalized_test.max()}")
+# normalized_test, test_min, test_max = range_adaptive_normalization(test_tensor_same_values)
+# print(f"Test tensor (same values per channel) normalized: \n{normalized_test}")
+# print(f"Test min values: {test_min}")
+# print(f"Test max values: {test_max}")
+# print(f"Normalized test min: {normalized_test.min()}, max: {normalized_test.max()}")

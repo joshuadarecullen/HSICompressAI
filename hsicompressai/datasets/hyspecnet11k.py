@@ -5,8 +5,9 @@ import numpy as np
 import torch
 
 from torch.utils.data import Dataset
+from hsicompressai.registry import register_dataset
 
-
+@register_dataset("HySpecNet11k")
 class HySpecNet11k(Dataset):
     """
     Dataset:

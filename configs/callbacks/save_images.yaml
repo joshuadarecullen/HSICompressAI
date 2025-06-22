@@ -1,0 +1,4 @@
+saveimage:
+  _target_: hsicompress.callbacks.store_reconstructions.SaveReconstructedImagesCallback
+  save_dir: ${paths.log_dir}/eval
+

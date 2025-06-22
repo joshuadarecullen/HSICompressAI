@@ -1,0 +1,7 @@
+_target_: hsicompressai.data.hyspecnet11kdatamodule.HySpecNet11kDataModule
+data_dir: ${paths.data_dir}/hyspecnet-11k/
+batch_size: 8 # Needs to be divisible by the number of devices (e.g., if in a distributed setup)
+dataset_mode: Null
+transform: Null
+num_workers: 8
+pin_memory: False

@@ -1,0 +1,4 @@
+defaults:
+  - hys11-default
+
+dataset_mode: "easy"

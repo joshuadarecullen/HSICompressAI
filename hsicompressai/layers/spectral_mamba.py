@@ -9,7 +9,7 @@ __all__ = [
 
 class SpectralMamba(nn.Module):
     """
-    This block assumes the input is tokenised properly.
+    This block assumes the input is tokenised.
     """
 
     def __init__(self,

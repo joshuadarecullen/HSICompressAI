@@ -1,0 +1,48 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /data: hys11-mini
+  - override /model: mamba
+  - override /callbacks: default
+  - override /trainer: gpu
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["mini", "mamba"]
+
+seed: 1
+
+trainer:
+  min_epochs: 4
+  max_epochs: 1000
+  gradient_clip_val: 0.5
+  precision: Null
+  # devices: 1
+
+model:
+  optimizer:
+    lr: 0.0001
+  net:
+    mamba_params:
+      group_num: 32
+    dim: 32
+    target_compression_ratio: 16
+    num_mamba_layers: 8
+    patch_depth: 51
+
+  compile: false
+
+data:
+  batch_size: 8
+
+logger:
+  wandb:
+    tags: ${tags}
+    project: "HSI-Compression"
+    group: "CR16"
+  aim:
+    experiment: "mamba-cr16"

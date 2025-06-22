@@ -1,6 +1,6 @@
 from torch import nn
 
-from hsicompressai.latent_codec import LatentCodec
+from hsicompressai.latent_codecs import LatentCodec
 from hsicompressai.registry import register_model
 
 

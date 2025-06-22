@@ -1,0 +1,47 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /data: hys11-easy
+  - override /model: mamba
+  - override /callbacks: default
+  - override /trainer: gpu
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["easy", "mamba"]
+
+seed: 1
+
+trainer:
+  min_epochs: 4
+  max_epochs: 2000
+  gradient_clip_val: 0.5
+
+model:
+  # optimizer:
+    # lr: 0.001
+  net:
+    target_compression_ratio: 4
+    num_mamba_layers: 8
+
+  compile: false
+
+# data:
+#   batch_size: 64
+
+callbacks:
+  early_stopping:
+    patience: 300
+  model_checkpoint:
+    save_top_k: 5
+
+logger:
+  wandb:
+    tags: ${tags}
+    group: "HSI-Compression"
+  aim:
+    experiment: "mamba-cr4"

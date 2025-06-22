@@ -4,9 +4,9 @@ import torch.nn as nn
 
 from torch import Tensor
 
-__all__ = [
-    "LatentCodec",
-]
+# __all__ = [
+#     "LatentCodec",
+# ]
 
 
 class LatentCodec(nn.Module):

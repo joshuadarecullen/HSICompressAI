@@ -1,19 +1,17 @@
 from .cae1d import ConvolutionalAutoencoder1D
-from .ca1dm import ModifiedConvolutionalAutoencoder1D
+from .cae1dm import ModifiedConvolutionalAutoencoder1D
 from .cae3d import ConvolutionalAutoencoder3D
 from .hycot import HyperspectralCompressionTransformer
-from .mambacomp import MambaHSICompression
-from .hyperprior_autoencoder import HyperpriorAutoencoderBase
+# from .mambacomp import MambaHSICompression
 from .sscnet import SpectralSignalsCompressorNetwork
-from .src-model import ScalableReduceComplexityEntropyModel
+from .srcmodel import ScalableReduceComplexityEntropyModel
 
 
 __all__ = [
     "ConvolutionalAutoencoder1D",
     "ConvolutionalAutoencoder3D",
-    "HyperpriorAutoencoderBase",
     "HyperspectralCompressionTransformer",
-    "MambaHSICompression",
+    # "MambaHSICompression",
     "ModifiedConvolutionalAutoencoder1D",
     "SpectralSignalsCompressorNetwork",
     "ScalableReduceComplexityEntropyModel",
