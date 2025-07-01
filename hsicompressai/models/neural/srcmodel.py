@@ -172,7 +172,8 @@ class ScalableReduceComplexityEntropyModel(ConditionalHyperpriorAutoencoderBase)
                  src_channels: int=3,
                  cluster_size: int=3,
                  N: int=192,
-                 M: int=192) -> None:
+                 M: int=192,
+                 ) -> None:
 
         super().__init__()
 

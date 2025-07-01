@@ -16,9 +16,6 @@ __all__ = [
         "DynamicEmbedding",
         ]
 
-# from src.utils import posemb_sincos_1d
-# from utils import posemb_sincos_1d
-
 def posemb_sincos_1d(waves: Tensor,
                      dim: int,
                      temperature: int = 10000,
@@ -216,16 +213,3 @@ if "__main__" == __name__:
     awaves = torch.rand(num_channels)
     x, waves = patch_embed(ainput, awaves)
     print(f"Output: {x.shape}")
-
-    print("\n\nSecond Input\n")
-    batch_size, height, width, num_channels = 5, 256, 256, 50
-    binput = torch.rand((batch_size, height, width, num_channels))
-    print(f"original input: {binput.shape}")
-    binput = binput.reshape((batch_size * height * width, num_channels))
-    print(f"reshape input: {binput.shape}\n")
-    bwaves = torch.rand(num_channels)
-    x, waves = patch_embed(binput, bwaves)
-    print(f"Output: {x.shape}")
-
-    print("Model Arch\n")
-    print(patch_embed)

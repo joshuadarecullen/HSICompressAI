@@ -1,0 +1,34 @@
+_target_: hsicompressai.datamodule.neural.hsn11_module.HSN11LitModule
+
+net:
+  _target_: hsicompressai.models.neural.srcmodel.ScalableReduceComplexityEntropyModel
+  src_channels: 3
+  cluster_size: 3
+  N: 192
+  M: 192
+  target_bpppc: 4
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.001
+  weight_decay: 0.0
+
+scheduler: Null
+  # _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  # _partial_: true
+  # mode: min
+  # factor: 0.1
+  # patience: 10
+
+criterion:
+  _target_: src.losses.rate_distortion.RateDistortionLoss
+  lmbda: 0.01
+  metric: "mse"
+  return_type: "all"
+
+state_dict: Null
+
+# compile model for faster training with pytorch 2.0
+compile: false
+

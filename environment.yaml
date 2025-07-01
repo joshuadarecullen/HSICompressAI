@@ -32,3 +32,4 @@ dependencies:
       - compressai==1.2.6 
       - mamba-ssm==2.2.4
       - causal-conv1d>=1.4.0
+      - albumentations==2.0.8

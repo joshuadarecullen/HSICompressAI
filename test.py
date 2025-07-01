@@ -16,5 +16,22 @@ x_hat = outputs['x_hat']
 y_likelihoods = outputs['likelihoods']['y']
 z_likelihoods = outputs['likelihoods']['z']
 
-print(psnr(batch, x_hat))
-print(loss)
+# print(psnr(batch, x_hat))
+# print(loss)
+
+lambdas = [0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]
+#build a function that will lopp varying lambdas and return the psnr
+
+def loop_lambdas(model, batch, lambdas):
+    psnrs = []
+    for l in lambdas:
+        model.criterion.lmbda = l
+        outputs = model(batch)
+        x_hat = outputs['x_hat']
+        psnrs.append(psnr(batch, x_hat))
+    return psnrs
+
+psnrs = loop_lambdas(model, batch, lambdas)
+
+for psnr in psnrs:
+    print(psnr)
