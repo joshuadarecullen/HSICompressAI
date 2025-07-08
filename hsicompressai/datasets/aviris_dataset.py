@@ -103,7 +103,7 @@ if "__main__" == __name__:
                  'green': 17,
                  'blue': 5,
                  }
-    tif_path = r'/home/jd983/Documents/phd/data/indianPines/aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif'
+    tif_path = r'/home/jd983/Documents/phd/code/HSICompressAI/data/aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif'
     dataset = AVIRISTiffDataset(tif_path, patch_size=None)
     loader = DataLoader(dataset, batch_size=1, shuffle=True)
 
