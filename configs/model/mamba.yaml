@@ -1,4 +1,4 @@
-_target_: hsicompress.datamodules.hsn11_module.HSN11LitModule
+_target_: hsicompress.models.hsn11_module.HSN11LitModule
 
 net:
   _target_: hsicompressai.models.neural.mamba.MambaHSICompression

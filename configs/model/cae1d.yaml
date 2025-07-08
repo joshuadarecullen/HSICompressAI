@@ -1,4 +1,4 @@
-_target_: hsicompressai.datamodule.neural.hsn11_module.HSN11LitModule
+_target_: hsicompressai.models.neural.hsn11_module.HSN11LitModule
 
 net:
   _target_: hsicompressai.models.neural.cae1dm.ModifiedConvolutionalAutoencoder1D

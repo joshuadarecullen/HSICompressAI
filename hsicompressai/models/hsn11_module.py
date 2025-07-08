@@ -35,8 +35,7 @@ class HSN11LitModule(LightningModule):
 
         self.net = net
 
-        if criterion:
-            self.criterion = criterion
+        self.criterion = criterion if criterion else None
 
         self.train_loss = MeanMetric()
         self.val_loss = MeanMetric()
@@ -75,8 +74,8 @@ class HSN11LitModule(LightningModule):
             loss = self.criterion(x_hat, x)
         else:
             outputs = self(x)
-            loss = net.loss(outputs, x)["loss"]
-            x_hat = outputs["x_hat"] 
+            loss = self.net.loss(outputs, x)["loss"]
+            x_hat = outputs["x_hat"]
 
         return loss, x_hat
 

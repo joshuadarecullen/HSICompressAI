@@ -173,6 +173,9 @@ class ScalableReduceComplexityEntropyModel(ConditionalHyperpriorAutoencoderBase)
                  cluster_size: int=3,
                  N: int=192,
                  M: int=192,
+                 loss_metric: str="mse",
+                 loss_return: str="all",
+                 target_bpppc: float=1.0
                  ) -> None:
 
         super().__init__()
@@ -189,7 +192,9 @@ class ScalableReduceComplexityEntropyModel(ConditionalHyperpriorAutoencoderBase)
         self.cluster_size = cluster_size
         self.pad_size = (cluster_size - src_channels % cluster_size) % cluster_size
 
-        self.criterion = RateDistortionLoss(lmbda=100)
+        self.criterion = RateDistortionLoss(lmbda=target_bpppc,
+                                            metric=loss_metric,
+                                            return_type=loss_return)
 
     def _pad_spectral_to_divisible(self, x: torch.Tensor):
         """

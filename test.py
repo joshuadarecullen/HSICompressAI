@@ -3,35 +3,43 @@ import hsicompressai
 from hsicompressai.models.neural import ScalableReduceComplexityEntropyModel
 from hsicompressai.metrics import PeakSignalToNoiseRatio
 
-psnr = PeakSignalToNoiseRatio()
+from hsicompressai.datamodules.hyspecnet11kdatamodule import HySpecNet11kDataModule
 
-src_channels = 6
-batch = torch.randn(5, src_channels, 256, 256)  # Replace with real image
-model = ScalableReduceComplexityEntropyModel(src_channels=src_channels)
-outputs = model(batch)
+#psnr = PeakSignalToNoiseRatio()
 
-loss = model.loss(outputs, batch)
+#src_channels = 6
+#batch = torch.randn(5, src_channels, 256, 256)  # Replace with real image
+#model = ScalableReduceComplexityEntropyModel(src_channels=src_channels)
+#outputs = model(batch)
 
-x_hat = outputs['x_hat']
-y_likelihoods = outputs['likelihoods']['y']
-z_likelihoods = outputs['likelihoods']['z']
+#loss = model.loss(outputs, batch)
 
-# print(psnr(batch, x_hat))
-# print(loss)
+#x_hat = outputs['x_hat']
+#y_likelihoods = outputs['likelihoods']['y']
+#z_likelihoods = outputs['likelihoods']['z']
 
-lambdas = [0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]
-#build a function that will lopp varying lambdas and return the psnr
+## print(psnr(batch, x_hat))
+## print(loss)
 
-def loop_lambdas(model, batch, lambdas):
-    psnrs = []
-    for l in lambdas:
-        model.criterion.lmbda = l
-        outputs = model(batch)
-        x_hat = outputs['x_hat']
-        psnrs.append(psnr(batch, x_hat))
-    return psnrs
+#lambdas = [0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]
+##build a function that will lopp varying lambdas and return the psnr
 
-psnrs = loop_lambdas(model, batch, lambdas)
+#def loop_lambdas(model, batch, lambdas):
+#    psnrs = []
+#    for l in lambdas:
+#        model.criterion.lmbda = l
+#        outputs = model(batch)
+#        x_hat = outputs['x_hat']
+#        psnrs.append(psnr(batch, x_hat))
+#    return psnrs
 
-for psnr in psnrs:
-    print(psnr)
+#psnrs = loop_lambdas(model, batch, lambdas)
+
+#for psnr in psnrs:
+#    print(psnr)
+
+datamodule = HySpecNet11kDataModule(
+    data_root="/home/jd983/Documents/phd/code/HSICompressAI/data/hyspecnet-11k",
+    dataset_mode="mini",
+    batch_size=16,
+)

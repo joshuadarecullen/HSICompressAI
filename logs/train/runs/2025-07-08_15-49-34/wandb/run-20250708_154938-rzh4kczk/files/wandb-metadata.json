@@ -1,0 +1,42 @@
+{
+  "os": "Linux-6.11.0-29-generic-x86_64-with-glibc2.39",
+  "python": "CPython 3.12.2",
+  "startedAt": "2025-07-08T14:49:38.265384Z",
+  "program": "/home/jd983/Documents/phd/code/HSICompressAI/training/train.py",
+  "codePath": "training/train.py",
+  "git": {
+    "remote": "https://github.com/joshuadarecullen/HSICompressAI.git",
+    "commit": "2a8b0742129f716b0bba9f92f85cd4bb0b231646"
+  },
+  "email": "joshdc95@gmail.com",
+  "root": "/home/jd983/Documents/phd/code/HSICompressAI/logs/train/runs/2025-07-08_15-49-34",
+  "host": "Scan3376432",
+  "executable": "/home/jd983/miniconda3/envs/hsicompressai/bin/python3",
+  "codePathLocal": "training/train.py",
+  "cpu_count": 20,
+  "cpu_count_logical": 28,
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "2011876704256",
+      "used": "824558063616"
+    }
+  },
+  "memory": {
+    "total": "67223932928"
+  },
+  "cpu": {
+    "count": 20,
+    "countLogical": 28
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 4090",
+      "memoryTotal": "25757220864",
+      "cudaCores": 16384,
+      "architecture": "Ada"
+    }
+  ],
+  "cudaVersion": "12.7"
+}

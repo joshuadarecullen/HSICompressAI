@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 
 import hydra
 from copy import deepcopy
+import rootutils
 
 import pytorch_lightning as pl
 import torch
@@ -9,7 +10,9 @@ from pytorch_lightning import Callback, LightningDataModule, LightningModule, Tr
 from pytorch_lightning.loggers import Logger
 from omegaconf import DictConfig
 
-from hsicompressai.utils import utils
+rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
+
+from hsicompressai import utils
 from hsicompressai.utils import get_pylogger
 
 log = get_pylogger(__name__)
@@ -25,75 +28,76 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     :param cfg: A DictConfig configuration composed by Hydra.
     :return: A tuple with metrics and dict with all instantiated objects.
     """
-    # set seed for random number generators in pytorch, numpy and python.random
-    #if cfg.get("seed"):
-    #    pl.seed_everything(cfg.seed, workers=True)
+     # set seed for random number generators in pytorch, numpy and python.random
+    if cfg.get("seed"):
+        pl.seed_everything(cfg.seed, workers=True)
 
-    #log.info(f"Instantiating datamodule <{cfg.data._target_}>")
-    #datamodule: LightningDataModule = hydra.utils.instantiate(cfg.data)
-    #datamodule.prepare_data()  # download if not present
-    #datamodule.setup()
+    log.info(f"Instantiating datamodule <{cfg.data._target_}>")
+    print(cfg.data)
+    datamodule: LightningDataModule = hydra.utils.instantiate(cfg.data)
+    # datamodule.prepare_data()  # download if not present
+    # datamodule.setup()
 
-    #log.info(f"Instantiating model <{cfg.model._target_}>")
-    #model: LightningModule = hydra.utils.instantiate(cfg.model)
+    log.info(f"Instantiating model <{cfg.model._target_}>")
+    model: LightningModule = hydra.utils.instantiate(cfg.model)
 
-    #log.info("Instantiating callbacks...")
-    #callbacks: List[Callback] = utils.instantiate_callbacks(cfg.get("callbacks"))
+    log.info("Instantiating callbacks...")
+    callbacks: List[Callback] = utils.instantiate_callbacks(cfg.get("callbacks"))
 
-    #log.info("Instantiating loggers...")
-    #logger: List[Logger] = utils.instantiate_loggers(cfg.get("logger"))
+    log.info("Instantiating loggers...")
+    logger: List[Logger] = utils.instantiate_loggers(cfg.get("logger"))
 
-    #log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
-    #trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
+    log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
+    trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
 
-    #object_dict = {
-    #    "cfg": cfg,
-    #    "datamodule": datamodule,
-    #    "model": model,
-    #    "callbacks": callbacks,
-    #    "logger": logger,
-    #    "trainer": trainer,
-    #}
+    object_dict = {
+        "cfg": cfg,
+        "datamodule": datamodule,
+        "model": model,
+        "callbacks": callbacks,
+        "logger": logger,
+        "trainer": trainer,
+    }
 
-    #if logger:
-    #    log.info("Logging hyperparameters!")
-    #    utils.log_hyperparameters(object_dict)
+    if logger:
+        log.info("Logging hyperparameters!")
+        utils.log_hyperparameters(object_dict)
 
-    #if cfg.get("train"):
-    #    log.info("Starting training!")
-    #    # datamodule.setup_folds(cfg.get("num_folds"))
-    #    # store the original state of the 1st generated model for continuity across the folds
-    #    # lightning_module_state_dict = deepcopy(model.state_dict())
-    #    # current_fold=0
+    if cfg.get("train"):
+        log.info("Starting training!")
+        # datamodule.setup_folds(cfg.get("num_folds"))
+        # store the original state of the 1st generated model for continuity across the folds
+        # lightning_module_state_dict = deepcopy(model.state_dict())
+        # current_fold=0
 
-    #    # for current_fold in range(cfg.get("num_folds")):
-    #    # log.info(f"Current fold {current_fold}")
-    #    # datamodule.setup_fold_index(current_fold)
-    #    # model.load_state_dict(lightning_module_state_dict)
+        # for current_fold in range(cfg.get("num_folds")):
+        # log.info(f"Current fold {current_fold}")
+        # datamodule.setup_fold_index(current_fold)
+        # model.load_state_dict(lightning_module_state_dict)
 
-    #    #TODO update the checkpoint exportpath in model checkpoint to include fold
-    #    # export_path = cfg.get("callbacks")['model_checkpoint']['dirpath']
+        #TODO update the checkpoint exportpath in model checkpoint to include fold
+        # export_path = cfg.get("callbacks")['model_checkpoint']['dirpath']
 
-    #    trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
-    #    train_metrics = trainer.callback_metrics
+        trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
+        train_metrics = trainer.callback_metrics
 
-    #        # trainer.save_checkpoint(osp.join(export_path, f"model.{self.current_fold}.pt"))
+            # trainer.save_checkpoint(osp.join(export_path, f"model.{self.current_fold}.pt"))
 
-    #    # checkpoint_paths = [osp.join(self.export_path, f"model.{f_idx + 1}.pt") for f_idx in range(cfg.get("folds"))]
+        # checkpoint_paths = [osp.join(self.export_path, f"model.{f_idx + 1}.pt") for f_idx in range(cfg.get("folds"))]
 
 
-    #if cfg.get("test"):
-    #    log.info("Starting testing!")
-    #    ckpt_path = trainer.checkpoint_callback.best_model_path
-    #    if ckpt_path == "":
-    #        log.warning("Best ckpt not found! Using current weights for testing...")
-    #        ckpt_path = None
-    #    trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
-    #    log.info(f"Best ckpt path: {ckpt_path}")
+    if cfg.get("test"):
+        log.info("Starting testing!")
+        ckpt_path = trainer.checkpoint_callback.best_model_path
+        if ckpt_path == "":
+            log.warning("Best ckpt not found! Using current weights for testing...")
+            ckpt_path = None
+        trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
+        log.info(f"Best ckpt path: {ckpt_path}")
 
-    #test_metrics = trainer.callback_metrics
+    test_metrics = trainer.callback_metrics
 
-    #metric_dict = {**train_metrics, **test_metrics}
+    metric_dict = {**train_metrics, **test_metrics}
 
     return metric_dict, object_dict
 

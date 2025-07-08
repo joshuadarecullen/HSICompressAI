@@ -1,0 +1,149 @@
+_wandb:
+    value:
+        cli_version: 0.19.8
+        m:
+            - "1": trainer/global_step
+              "6":
+                - 3
+              "7": []
+        python_version: 3.12.2
+        t:
+            "1":
+                - 1
+                - 9
+                - 11
+                - 41
+                - 49
+                - 50
+                - 55
+                - 77
+                - 79
+                - 80
+                - 103
+                - 106
+            "2":
+                - 1
+                - 9
+                - 11
+                - 41
+                - 49
+                - 50
+                - 55
+                - 77
+                - 79
+                - 80
+                - 103
+                - 106
+            "3":
+                - 2
+                - 7
+                - 15
+                - 23
+                - 55
+                - 66
+            "4": 3.12.2
+            "5": 0.19.8
+            "6": 4.49.0
+            "8":
+                - 5
+            "12": 0.19.8
+            "13": linux-x86_64
+callbacks:
+    value:
+        early_stopping:
+            _target_: pytorch_lightning.callbacks.EarlyStopping
+            check_finite: true
+            check_on_train_epoch_end: null
+            divergence_threshold: null
+            min_delta: 0
+            mode: min
+            monitor: val/loss
+            patience: 200
+            stopping_threshold: null
+            strict: true
+            verbose: false
+        metrics:
+            _target_: hsicompressai.callbacks.metrics.Metrics
+        model_checkpoint:
+            _target_: pytorch_lightning.callbacks.ModelCheckpoint
+            auto_insert_metric_name: false
+            dirpath: ${paths.output_dir}/checkpoints
+            every_n_epochs: null
+            every_n_train_steps: null
+            filename: epoch_{epoch:03d}
+            mode: min
+            monitor: val/loss
+            save_last: true
+            save_on_train_epoch_end: null
+            save_top_k: 1
+            save_weights_only: false
+            train_time_interval: null
+            verbose: false
+        model_summary:
+            _target_: pytorch_lightning.callbacks.RichModelSummary
+            max_depth: -1
+        rich_progress_bar:
+            _target_: pytorch_lightning.callbacks.RichProgressBar
+ckpt_path:
+    value: null
+data:
+    value:
+        _target_: hsicompressai.datamodules.hyspecnet11kdatamodule.HySpecNet11kDataModule
+        batch_size: 8
+        data_root: ${paths.data_dir}/hyspecnet-11k/
+        dataset_class: hsicompressai.datasets.hyspecnet11k.HySpecNet11k
+        dataset_mode: mini
+        num_workers: 8
+        pin_memory: false
+        transform: null
+extras:
+    value:
+        enforce_tags: true
+        ignore_warnings: false
+        print_config: true
+model:
+    value:
+        _target_: hsicompressai.models.hsn11_module.HSN11LitModule
+        compile: false
+        criterion: null
+        net:
+            _target_: hsicompressai.models.neural.srcmodel.ScalableReduceComplexityEntropyModel
+            M: 192
+            "N": 192
+            cluster_size: 3
+            loss_metric: mse
+            loss_return: all
+            src_channels: 202
+            target_bpppc: 0.1
+        optimizer:
+            _partial_: true
+            _target_: torch.optim.Adam
+            lr: 0.001
+            weight_decay: 0
+        scheduler: null
+        state_dict: null
+model/params/non_trainable:
+    value: 0
+model/params/total:
+    value: 8301315
+model/params/trainable:
+    value: 8301315
+seed:
+    value: 1
+tags:
+    value:
+        - dev
+task_name:
+    value: train
+trainer:
+    value:
+        _target_: pytorch_lightning.trainer.Trainer
+        accelerator: gpu
+        check_val_every_n_epoch: 1
+        default_root_dir: ${paths.output_dir}
+        deterministic: false
+        devices: 1
+        max_epochs: 1000
+        min_epochs: 4
+        num_sanity_val_steps: 0
+        strategy: auto

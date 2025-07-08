@@ -1,12 +1,14 @@
-_target_: hsicompressai.datamodule.neural.hsn11_module.HSN11LitModule
+_target_: hsicompressai.models.hsn11_module.HSN11LitModule
 
 net:
   _target_: hsicompressai.models.neural.srcmodel.ScalableReduceComplexityEntropyModel
-  src_channels: 3
+  src_channels: 202
   cluster_size: 3
   N: 192
   M: 192
-  target_bpppc: 4
+  loss_metric: "mse"
+  loss_return: "all"
+  target_bpppc: 0.1
 
 optimizer:
   _target_: torch.optim.Adam
@@ -21,11 +23,8 @@ scheduler: Null
   # factor: 0.1
   # patience: 10
 
-criterion:
-  _target_: src.losses.rate_distortion.RateDistortionLoss
-  lmbda: 0.01
-  metric: "mse"
-  return_type: "all"
+criterion: Null
+
 
 state_dict: Null
 

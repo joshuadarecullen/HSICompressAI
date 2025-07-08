@@ -5,7 +5,10 @@ import rasterio
 import matplotlib.pyplot as plt
 import numpy as np
 
-class AVIRISTiffDataset(Dataset):
+from hsicompressai.registry import register_dataset
+
+@register_dataset("IndianPinesDataset")
+class IndianPinesDataset(Dataset):
     def __init__(self, tif_path, patch_size=None, transform=None):
         """
         Args:
@@ -21,7 +24,7 @@ class AVIRISTiffDataset(Dataset):
             self.full_data = src.read().astype(np.float32)  # shape: (bands, height, width)
 
         # Normalize per-band to [0, 1]
-        self.full_data = self._normalize(self.full_data)
+        self.full_data = self.transform if transform else self._normalize(self.full_data)
 
         self.C, self.H, self.W = self.full_data.shape
 
@@ -30,6 +33,7 @@ class AVIRISTiffDataset(Dataset):
             self.num_patches_h = self.H // ph
             self.num_patches_w = self.W // pw
             self.total_patches = self.num_patches_h * self.num_patches_w
+            print(self.total_patches)
         else:
             self.total_patches = 1  # Whole image
 
@@ -37,6 +41,7 @@ class AVIRISTiffDataset(Dataset):
         return self.total_patches
 
     def __getitem__(self, idx):
+        # Extract non overlapping patches
         if self.patch_size:
             ph, pw = self.patch_size if isinstance(self.patch_size, tuple) else (self.patch_size, self.patch_size)
             row = idx // self.num_patches_w
@@ -95,19 +100,3 @@ def plot_aviris_rgb(data, red=26, green=17, blue=7, title="AVIRIS RGB"):
     plt.title(title)
     plt.axis('off')
     plt.show()
-
-if "__main__" == __name__:
-    from torch.utils.data import DataLoader
-
-    rgb_bands = {'red': 26,
-                 'green': 17,
-                 'blue': 5,
-                 }
-    tif_path = r'/home/jd983/Documents/phd/code/HSICompressAI/data/aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif'
-    dataset = AVIRISTiffDataset(tif_path, patch_size=None)
-    loader = DataLoader(dataset, batch_size=1, shuffle=True)
-
-    for batch in loader:
-        print(batch.shape)  # [1, 220, 145, 145]
-        plot_aviris_rgb(batch, **rgb_bands)
-

@@ -1,0 +1,104 @@
+task_name: train
+tags:
+- dev
+train: true
+test: true
+ckpt_path: null
+seed: 1
+data:
+  _target_: hsicompressai.datamodules.hyspecnet11kdatamodule.HySpecNet11kDataModule
+  data_root: ${paths.data_dir}/hyspecnet-11k/
+  dataset_mode: mini
+  batch_size: 8
+  transform: null
+  num_workers: 8
+  pin_memory: false
+model:
+  _target_: hsicompressai.models.hsn11_module.HSN11LitModule
+  net:
+    _target_: hsicompressai.models.neural.srcmodel.ScalableReduceComplexityEntropyModel
+    src_channels: 202
+    cluster_size: 3
+    'N': 192
+    M: 192
+    loss_metric: mse
+    loss_return: all
+    target_bpppc: 0.1
+  optimizer:
+    _target_: torch.optim.Adam
+    _partial_: true
+    lr: 0.001
+    weight_decay: 0.0
+  scheduler: null
+  criterion: null
+  state_dict: null
+  compile: false
+callbacks:
+  model_checkpoint:
+    _target_: pytorch_lightning.callbacks.ModelCheckpoint
+    dirpath: ${paths.output_dir}/checkpoints
+    filename: epoch_{epoch:03d}
+    monitor: val/loss
+    verbose: false
+    save_last: true
+    save_top_k: 1
+    mode: min
+    auto_insert_metric_name: false
+    save_weights_only: false
+    every_n_train_steps: null
+    train_time_interval: null
+    every_n_epochs: null
+    save_on_train_epoch_end: null
+  early_stopping:
+    _target_: pytorch_lightning.callbacks.EarlyStopping
+    monitor: val/loss
+    min_delta: 0.0
+    patience: 200
+    verbose: false
+    mode: min
+    strict: true
+    check_finite: true
+    stopping_threshold: null
+    divergence_threshold: null
+    check_on_train_epoch_end: null
+  model_summary:
+    _target_: pytorch_lightning.callbacks.RichModelSummary
+    max_depth: -1
+  rich_progress_bar:
+    _target_: pytorch_lightning.callbacks.RichProgressBar
+  metrics:
+    _target_: hsicompressai.callbacks.metrics.Metrics
+logger:
+  wandb:
+    _target_: pytorch_lightning.loggers.wandb.WandbLogger
+    save_dir: ${paths.output_dir}
+    offline: false
+    id: null
+    anonymous: null
+    project: Mamba
+    log_model: false
+    prefix: ''
+    group: ''
+    tags: []
+    job_type: ''
+trainer:
+  _target_: pytorch_lightning.trainer.Trainer
+  default_root_dir: ${paths.output_dir}
+  min_epochs: 4
+  max_epochs: 1000
+  accelerator: gpu
+  devices: 1
+  check_val_every_n_epoch: 1
+  deterministic: false
+  num_sanity_val_steps: 0
+  strategy: auto
+paths:
+  root_dir: ${oc.env:PROJECT_ROOT}
+  data_dir: ${paths.root_dir}/data/
+  log_dir: ${paths.root_dir}/logs/
+  output_dir: ${hydra:runtime.output_dir}
+  work_dir: ${hydra:runtime.cwd}
+extras:
+  ignore_warnings: false
+  enforce_tags: true
+  print_config: true
