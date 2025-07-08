@@ -19,7 +19,9 @@ trainer:
   precision: Null
 
 data:
-  batch_size: 16
+  transform:
+  _target_: hsicompressai.transforms.hsi_cluster.ClusterX
+  cluster_size: 3
 
 logger:
   wandb:

@@ -25,7 +25,6 @@ scheduler: Null
 
 criterion: Null
 
-
 state_dict: Null
 
 # compile model for faster training with pytorch 2.0
