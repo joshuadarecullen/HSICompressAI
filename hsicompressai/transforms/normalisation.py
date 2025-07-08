@@ -83,7 +83,6 @@ def range_adaptive_normalization(x: torch.Tensor) -> torch.Tensor:
         raise ValueError("Input tensor must be 3D (CHW) or 4D (NCHW).")
 
     # Apply the normalization formula: x'_{b,l,i} = (x_{b,l,i} - MIN_b) / (MAX_b - MIN_b + 1)
-    
     # Denominator to prevent division by zero when MIN_b == MAX_b
     denominator = (max_b - min_b + 1).clamp(min=1e-8) # Add a small epsilon if MAX_b - MIN_b is 0
 

@@ -196,26 +196,8 @@ class ScalableReduceComplexityEntropyModel(ConditionalHyperpriorAutoencoderBase)
                                             metric=loss_metric,
                                             return_type=loss_return)
 
-    def _pad_spectral_to_divisible(self, x: torch.Tensor):
-        """
-        Pads the spectral (channel) dimension (dim=1) of a 4D tensor [B, C, H, W]
-        so that C is divisible by `divisor`. Pads with zeros at the end.
-        Returns:
-            x_padded: the padded tensor
-            pad_size: number of channels padded (to undo later if needed)
-        """
-        return F.pad(x, (0, 0, 0, 0, 0, self.pad_size))  # Only pad the channels
-
     def forward(self,
                 x: Tensor) -> Dict[str, Tensor | Dict[str, Tensor]]:
-
-        B, C, _, _ = x.shape
-
-        if self.pad_size:
-            x = self._pad_spectral_to_divisible(x)
-
-        # cluster each image into 3 bands
-        x = rearrange(x, 'b (n c) h w -> (b n) c h w', c=self.cluster_size)
 
         # Encoder
         y = self.analysis(x)
@@ -236,8 +218,7 @@ class ScalableReduceComplexityEntropyModel(ConditionalHyperpriorAutoencoderBase)
         x_hat = self.synthesis(y_hat)
 
         # compose original hsi shape
-        x_hat = rearrange(x_hat, '(b n) c h w -> b (n c) h w', b=B)
-        x_hat = x_hat[:, :C, :, :] #  remove padded
+        # x_hat = x_hat[:, :C, :, :] #  remove padded
 
         return {
                 'x_hat': x_hat,
