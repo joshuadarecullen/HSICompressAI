@@ -8,7 +8,7 @@ net:
   M: 192
   loss_metric: "mse"
   loss_return: "all"
-  target_bpppc: 0.1
+  target_bpppc: 1.0
 
 optimizer:
   _target_: torch.optim.Adam
