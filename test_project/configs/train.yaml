@@ -1,0 +1,22 @@
+# Basic training configuration
+defaults:
+  - _self_
+  - data: my_data
+  - model: my_model
+  - trainer: gpu
+  - logger: wandb
+
+# Task configuration
+task_name: "my_experiment"
+tags: ["basic", "custom"]
+
+# Training settings
+train: true
+test: true
+seed: 42
+
+# Override default settings here
+# model:
+#   learning_rate: 0.001
+# data:
+#   batch_size: 32

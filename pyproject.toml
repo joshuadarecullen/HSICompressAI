@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hsicompressai"
+version = "0.1.0"
+description = "Hyperspectral Image Compression using AI"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["hyperspectral", "compression", "deep learning", "pytorch"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "torch>=2.0.0",
+    "pytorch-lightning>=2.0.0",
+    "hydra-core>=1.3.0",
+    "omegaconf>=2.3.0",
+    "rootutils>=1.0.0",
+    "torchmetrics>=1.0.0",
+    "torchvision>=0.15.0",
+    "numpy>=1.21.0",
+    "scipy>=1.7.0",
+    "pillow>=8.3.0",
+    "matplotlib>=3.5.0",
+    "rich>=12.0.0",
+    "wandb>=0.13.0",
+    "compressai>=1.2.0",
+    "kornia>=0.8.1",
+    "albumentations>=2.0.8",
+    "typer>=0.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "isort>=5.10.0",
+    "flake8>=4.0.0",
+    "mypy>=0.950",
+    "pre-commit>=2.15.0",
+]
+
+[project.scripts]
+hsicompressai = "hsicompressai.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/hsicompressai"
+Repository = "https://github.com/yourusername/hsicompressai"
+Issues = "https://github.com/yourusername/hsicompressai/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hsicompressai*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+hsicompressai = ["configs/**/*.yaml", "templates/**/*.yaml"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

@@ -1,0 +1,19 @@
+# Custom model configuration
+# @package _global_
+
+# Use one of the available models or create your own
+_target_: hsicompressai.models.neural.srcmodel.SRCModel
+
+# Model architecture
+input_channels: 224  # Number of spectral bands
+latent_dim: 64
+num_layers: 4
+
+# Training settings
+learning_rate: 0.001
+weight_decay: 1e-4
+
+# Loss function
+criterion:
+  _target_: hsicompressai.losses.rate_distortion.RateDistortionLoss
+  lambda_rd: 0.01

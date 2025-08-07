@@ -1,0 +1,32 @@
+# @package _global_
+defaults:
+  - override /data: hys11-mini
+  - override /model: srcmodel
+  - override /callbacks: default
+  - override /trainer: gpu
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["mini", "ScalableReduceComplexity"]
+
+seed: 1
+
+trainer:
+  min_epochs: 4
+  max_epochs: 1000
+  gradient_clip_val: 0.5
+  precision: Null
+
+data:
+  transform:
+  _target_: hsicompressai.transforms.hsi_cluster.ClusterX
+  cluster_size: 3
+
+logger:
+  wandb:
+    tags: ${tags}
+    project: "HSI-Compression"
+    group: "ScalableReduceComplexity"
+  aim:
+    experiment: "target_bpppc0.1"
