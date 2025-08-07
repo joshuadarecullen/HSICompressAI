@@ -1,3 +1,26 @@
+"""HSN11 Lightning Module for hyperspectral image compression.
+
+This module provides a PyTorch Lightning wrapper for hyperspectral compression models,
+specifically designed for the HySpecNet-11k dataset. It handles training, validation,
+and testing workflows with support for both custom loss functions and built-in model losses.
+
+Classes:
+    HSN11LitModule: Main Lightning module for hyperspectral compression
+    
+Example:
+    >>> from hsicompressai.models import HSN11LitModule
+    >>> from hsicompressai.models.neural import CAE1DModule
+    >>> net = CAE1DModule()
+    >>> model = HSN11LitModule(
+    ...     net=net,
+    ...     optimizer=torch.optim.Adam,
+    ...     scheduler=None,
+    ...     criterion=None,
+    ...     state_dict={},
+    ...     compile=False
+    ... )
+"""
+
 from typing import Any, Dict, Tuple, Union
 
 import torch
@@ -6,11 +29,26 @@ import pytorch_lightning as pl
 from pytorch_lightning import LightningModule
 from torchmetrics import MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
+from hsicompressai.registry import register_plmodule
 
 
+@register_plmodule("HySpecNet11k")
 class HSN11LitModule(LightningModule):
-    """
-    HSI LightningModule
+    """PyTorch Lightning module for hyperspectral image compression.
+    
+    This module provides a standardized interface for training, validating, and testing
+    hyperspectral compression models. It supports both external loss functions and
+    models with built-in loss computation.
+    
+    Attributes:
+        net: The underlying compression model
+        criterion: Optional external loss function
+        train_loss: Training loss metric tracker
+        val_loss: Validation loss metric tracker  
+        test_loss: Test loss metric tracker
+        
+    Note:
+        This module is registered as "HySpecNet11k" in the PyTorch Lightning registry.
     """
 
     def __init__(
@@ -22,10 +60,19 @@ class HSN11LitModule(LightningModule):
         state_dict: Dict[str, Tensor],
         compile: bool,
     ) -> None:
-        """
-        :param net: The model to train.
-        :param optimizer: The optimizer to use for training.
-        :param scheduler: The learning rate scheduler to use for training.
+        """Initialize the HSN11 Lightning Module.
+        
+        Args:
+            net: The compression model to train (e.g., CAE1D, CAE3D, etc.)
+            optimizer: Optimizer class to use for training
+            scheduler: Learning rate scheduler class
+            criterion: Optional external loss function. If None, uses model's built-in loss
+            state_dict: Pre-trained model state dictionary
+            compile: Whether to compile the model with torch.compile for optimization
+            
+        Note:
+            If criterion is None, the model is expected to have a loss() method
+            that returns a dictionary with at least a 'loss' key.
         """
         super().__init__()
 

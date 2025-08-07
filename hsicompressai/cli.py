@@ -1,3 +1,20 @@
+"""Command Line Interface for HSICompressAI.
+
+This module provides a Typer-based CLI for training and evaluating hyperspectral
+compression models. It integrates with Hydra for configuration management and
+provides convenient commands for model operations.
+
+Commands:
+    train: Train a hyperspectral compression model
+    evaluate: Evaluate a trained model
+    init-config: Create configuration templates
+
+Example:
+    $ hsicompressai train experiment=mamba trainer.max_epochs=100
+    $ hsicompressai evaluate ckpt_path=path/to/checkpoint.ckpt
+    $ hsicompressai init-config my_project --template advanced
+"""
+
 import os
 import sys
 from pathlib import Path
@@ -9,8 +26,18 @@ from omegaconf import DictConfig
 
 app = typer.Typer(help="HSICompressAI - Hyperspectral Image Compression using AI")
 
-def find_package_root():
-    """Find the package root directory containing configs/"""
+def find_package_root() -> Path:
+    """Find the package root directory containing configs/.
+    
+    Traverses up the directory tree from the current file location
+    until it finds a directory containing a 'configs' subdirectory.
+    
+    Returns:
+        Path: The root directory path containing configs/
+        
+    Note:
+        Falls back to the parent directory of this file if configs/ not found.
+    """
     current = Path(__file__).parent
     while current != current.parent:
         if (current / "configs").exists():
@@ -20,13 +47,29 @@ def find_package_root():
 
 @hydra.main(version_base=None, config_path="../configs", config_name="train")
 def _train_with_hydra(cfg: DictConfig) -> None:
-    """Internal function to run training with Hydra."""
+    """Internal function to run training with Hydra configuration.
+    
+    Args:
+        cfg: Hydra configuration object containing all training parameters
+        
+    Note:
+        This function is decorated with @hydra.main and serves as the entry
+        point for Hydra-managed training configuration.
+    """
     from training.train import train
     train(cfg)
 
 @hydra.main(version_base=None, config_path="../configs", config_name="eval")  
 def _eval_with_hydra(cfg: DictConfig) -> None:
-    """Internal function to run evaluation with Hydra."""
+    """Internal function to run evaluation with Hydra configuration.
+    
+    Args:
+        cfg: Hydra configuration object containing all evaluation parameters
+        
+    Note:
+        This function is decorated with @hydra.main and serves as the entry
+        point for Hydra-managed evaluation configuration.
+    """
     from training.eval import evaluate
     evaluate(cfg)
 

@@ -1,3 +1,21 @@
+"""AVIRIS Lightning DataModule for hyperspectral image compression training.
+
+This module provides a PyTorch Lightning DataModule for loading and processing AVIRIS
+hyperspectral imagery data in a format suitable for training neural compression models.
+
+Classes:
+    AVIRISDataModule: Lightning DataModule for AVIRIS hyperspectral data
+
+Example:
+    >>> datamodule = AVIRISDataModule(
+    ...     data_dir="path/to/aviris/data",
+    ...     batch_size=4,
+    ...     num_workers=2
+    ... )
+    >>> datamodule.setup()
+    >>> train_loader = datamodule.train_dataloader()
+"""
+
 from typing import Any, Dict, Optional, Tuple, Callable
 from torch import Tensor
 
@@ -9,36 +27,36 @@ from .aviris_dataset import AVIRISTiffDataset
 
 
 class AVIRISDataModule(LightningDataModule):
-    """`LightningDataModule` for the MNIST dataset.
-
-    A `LightningDataModule` implements 7 key methods:
-
-    ```python
-        def prepare_data(self):
-        # Things to do on 1 GPU/TPU (not on every GPU/TPU in DDP).
-        # Download data, pre-process, split, save to disk, etc...
-
-        def setup(self, stage):
-        # Things to do on every process in DDP.
-        # Load data, set variables, etc...
-
-        def train_dataloader(self):
-        # return train dataloader
-
-        def val_dataloader(self):
-        # return validation dataloader
-
-        def test_dataloader(self):
-        # return test dataloader
-
-        def predict_dataloader(self):
-        # return predict dataloader
-
-        def teardown(self, stage):
-        # Called on every process in DDP.
-        # Clean up after fit or test.
-    ```
-
+    """Lightning DataModule for AVIRIS hyperspectral imagery.
+    
+    This DataModule provides a standardized interface for loading AVIRIS hyperspectral
+    data for training, validation, and testing of neural compression models. It handles
+    data loading, preprocessing, and batch creation.
+    
+    The module implements the standard Lightning DataModule interface with methods for:
+    - Data preparation and setup
+    - Train/validation/test dataloaders
+    - State management for checkpointing
+    
+    Attributes:
+        data_dir (str): Path to the AVIRIS data directory
+        batch_size (int): Batch size for data loading
+        num_workers (int): Number of worker processes for data loading
+        pin_memory (bool): Whether to pin memory in DataLoader
+        transform (callable): Optional transform to apply to samples
+        
+    Example:
+        >>> # Basic usage
+        >>> datamodule = AVIRISDataModule(data_dir="data/aviris/", batch_size=4)
+        >>> datamodule.setup()
+        >>> 
+        >>> # With custom transforms
+        >>> transform = lambda x: x * 0.5  # Example transform
+        >>> datamodule = AVIRISDataModule(
+        ...     data_dir="data/aviris/",
+        ...     batch_size=8,
+        ...     transform=transform
+        ... )
     """
 
     def __init__(
@@ -50,12 +68,20 @@ class AVIRISDataModule(LightningDataModule):
         pin_memory: bool = False,
         transform: Optional[Callable[[Tensor], Tensor]] = None
     ) -> None:
-        """Initialize a `HK13DataModule`.
-        :param data_dir: The data directory. Defaults to `"data/"`.
-        :param train_val_test_split: The train, validation and test split.
-        :param batch_size: The batch size. Defaults to `64`.
-        :param num_workers: The number of workers. Defaults to `0`.
-        :param pin_memory: Whether to pin memory. Defaults to `False`.
+        """Initialize AVIRIS DataModule.
+        
+        Args:
+            data_dir (str, optional): Path to the AVIRIS data directory. 
+                Defaults to "data/".
+            train_val_test_split (Tuple[float, float, float], optional): 
+                Proportions for train/validation/test splits. Defaults to (0.6, 0.2, 0.2).
+            batch_size (int, optional): Batch size for data loading. Defaults to 1.
+            num_workers (int, optional): Number of worker processes for data loading. 
+                Defaults to 0.
+            pin_memory (bool, optional): Whether to pin memory in DataLoader for 
+                faster GPU transfer. Defaults to False.
+            transform (callable, optional): Transform to apply to samples. 
+                Defaults to None.
         """
         super().__init__()
 
@@ -75,25 +101,33 @@ class AVIRISDataModule(LightningDataModule):
 
     @property
     def num_classes(self) -> int:
+        """Number of classes in dataset.
+        
+        Returns:
+            int: Always returns 0 as this is a self-supervised compression task.
+        """
         return 0
 
     def prepare_data(self) -> None:
+        """Prepare data for use.
+        
+        Called only once and on single GPU. Used for downloading or 
+        preprocessing that should be done once.
+        """
         pass
 
     def setup(self, stage: Optional[str] = None) -> None:
-        """
-        Load data. Set variables: `self.train_data`, `self.val_data`,
-        `self.test_data`.
-
-        This method is called by Lightning before `trainer.fit()`,
-        `trainer.validate()`, `trainer.test()`, and `trainer.predict()`,
-        so be careful not to execute things like random split twice!
-        Also, it is called after `self.prepare_data()` and there is a
-        barrier in between which ensures that all the processes proceed to
-        `self.setup()` once the data is prepared and available for use.
-
-        :param stage: The stage to setup. Either `"fit"`, `"validate"`,
-        `"test"` , or `"predict"`. Defaults to ``None``.
+        """Set up datasets for training, validation, and testing.
+        
+        Creates dataset instances and handles distributed training considerations.
+        Called on every process in distributed training.
+        
+        Args:
+            stage (str, optional): The stage being set up. Can be "fit", "validate", 
+                "test", or "predict". If None, sets up all stages. Defaults to None.
+                
+        Raises:
+            RuntimeError: If batch size is not divisible by number of devices.
         """
         # Divide batch size by the number of devices.
         if self.trainer is not None:
@@ -128,9 +162,10 @@ class AVIRISDataModule(LightningDataModule):
             # )
 
     def train_dataloader(self) -> DataLoader[Any]:
-        """Create and return the train dataloader.
-
-        :return: The train dataloader.
+        """Create and return the training dataloader.
+        
+        Returns:
+            DataLoader: Training dataloader with shuffling enabled.
         """
         return DataLoader(
             dataset=self.train_data,
@@ -142,8 +177,9 @@ class AVIRISDataModule(LightningDataModule):
 
     def val_dataloader(self) -> DataLoader[Any]:
         """Create and return the validation dataloader.
-
-        :return: The validation dataloader.
+        
+        Returns:
+            DataLoader: Validation dataloader without shuffling.
         """
         return DataLoader(
             dataset=self.val_data,
@@ -155,8 +191,9 @@ class AVIRISDataModule(LightningDataModule):
 
     def test_dataloader(self) -> DataLoader[Any]:
         """Create and return the test dataloader.
-
-        :return: The test dataloader.
+        
+        Returns:
+            DataLoader: Test dataloader without shuffling.
         """
         return DataLoader(
             dataset=self.test_data,
@@ -167,32 +204,31 @@ class AVIRISDataModule(LightningDataModule):
         )
 
     def teardown(self, stage: Optional[str] = None) -> None:
-        """
-        Lightning hook for cleaning up after `trainer.fit()`,
-        `trainer.validate()`, `trainer.test()`, and `trainer.predict()`.
-
-        :param stage: The stage being torn down. Either `"fit"`, `"validate"`,
-        `"test"`, or `"predict"`.  Defaults to ``None``.
+        """Clean up after training/validation/testing.
+        
+        Lightning hook for cleaning up resources after training stages complete.
+        
+        Args:
+            stage (str, optional): The stage being torn down. Can be "fit", 
+                "validate", "test", or "predict". Defaults to None.
         """
         pass
 
     def state_dict(self) -> Dict[Any, Any]:
-        """
-        Called when saving a checkpoint. Implement to generate and save the
-        datamodule state.
-
-        :return: A dictionary containing the datamodule state that you want to
-        save.
+        """Get datamodule state for checkpointing.
+        
+        Returns:
+            Dict[Any, Any]: Dictionary containing datamodule state to save.
+                Currently returns empty dict as no persistent state needed.
         """
         return {}
 
     def load_state_dict(self, state_dict: Dict[str, Any]) -> None:
-        """
-        Called when loading a checkpoint. Implement to reload datamodule state
-        given datamodule
-        `state_dict()`.
-
-        :param state_dict: The datamodule state returned by `self.state_dict()`
+        """Load datamodule state from checkpoint.
+        
+        Args:
+            state_dict (Dict[str, Any]): The datamodule state dictionary
+                returned by state_dict().
         """
         pass
 

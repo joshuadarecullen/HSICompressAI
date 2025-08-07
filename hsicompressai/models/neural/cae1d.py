@@ -1,3 +1,20 @@
+"""1D Convolutional Autoencoder for Hyperspectral Image Compression.
+
+This module implements a 1D convolutional autoencoder specifically designed
+for compressing hyperspectral images along the spectral dimension. The model
+processes each pixel's spectral signature independently.
+
+References:
+    Paper: "1D-CONVOLUTIONAL AUTOENCODER BASED HYPERSPECTRAL DATA COMPRESSION"
+    Authors: Kuester, Jannick and Gross, Wolfgang and Middelmann, Wolfgang
+    URL: https://doi.org/10.5194/isprs-archives-XLIII-B1-2021-15-2021
+    
+Example:
+    >>> model = ConvolutionalAutoencoder1D(src_channels=103)
+    >>> compressed = model.compress(spectral_data)  # Shape: [batch, channels]
+    >>> reconstructed = model.decompress(compressed)
+"""
+
 import math
 import torch.nn.functional as f
 
@@ -8,14 +25,31 @@ from hsicompressai.registry import register_model
 
 @register_model("CAE1D")
 class ConvolutionalAutoencoder1D(LatentCodec):
-    """
-    Title:
-        1D-CONVOLUTIONAL AUTOENCODER BASED HYPERSPECTRAL DATA COMPRESSION
-    Authors:
-        Kuester, Jannick and Gross, Wolfgang and Middelmann, Wolfgang
-    Paper:
-        https://doi.org/10.5194/isprs-archives-XLIII-B1-2021-15-2021
-    Cite:
+    """1D Convolutional Autoencoder for hyperspectral data compression.
+    
+    This model compresses hyperspectral images by applying 1D convolutions along
+    the spectral dimension. It uses an encoder-decoder architecture with pooling
+    operations to achieve compression and upsampling for reconstruction.
+    
+    Architecture:
+        - Encoder: Conv1d -> LeakyReLU -> MaxPool1d (repeated)
+        - Bottleneck: Single channel latent representation
+        - Decoder: Conv1d -> LeakyReLU -> Upsample (repeated)
+        
+    Attributes:
+        encoder: Sequential model for compression
+        decoder: Sequential model for reconstruction
+        src_channels: Number of input spectral channels
+        latent_channels: Number of compressed channels
+        compression_ratio: Theoretical compression ratio
+        bpppc: Bits per pixel per channel
+        
+    Reference:
+        Kuester, J., Gross, W., & Middelmann, W. (2021). 
+        1D-convolutional autoencoder based hyperspectral data compression.
+        ISPRS Archives, 43, 15-21.
+        
+    Citation:
         @article{kuester20211d,
             title={1D-convolutional autoencoder based hyperspectral data compression},
             author={Kuester, Jannick and Gross, Wolfgang and Middelmann, Wolfgang},
@@ -27,7 +61,16 @@ class ConvolutionalAutoencoder1D(LatentCodec):
         }
     """
 
-    def __init__(self, src_channels=103):
+    def __init__(self, src_channels: int = 103) -> None:
+        """Initialize the 1D Convolutional Autoencoder.
+        
+        Args:
+            src_channels: Number of input spectral channels (default: 103 for AVIRIS)
+            
+        Note:
+            The model automatically calculates padding requirements and compression
+            parameters based on the number of input channels.
+        """
         super().__init__()
 
         self.encoder = nn.Sequential(
@@ -125,6 +168,17 @@ class ConvolutionalAutoencoder1D(LatentCodec):
             else self.spectral_downsampling_factor_estimated - self.src_channels % self.spectral_downsampling_factor_estimated
 
     def compress(self, x):
+        """Compress hyperspectral data to latent representation.
+
+        Args:
+            x: Input tensor of shape [batch_size, src_channels]
+
+        Returns:
+            Compressed latent representation of shape [batch_size, latent_channels]
+
+        Note:
+            Applies padding if necessary to match expected input size.
+        """
         if self.padding_amount > 0:
             x = f.pad(x, (self.padding_amount, 0))
         x = x.unsqueeze(1)
@@ -135,6 +189,17 @@ class ConvolutionalAutoencoder1D(LatentCodec):
         return y
 
     def decompress(self, y):
+        """Decompress latent representation back to original data.
+        
+        Args:
+            y: Latent tensor of shape [batch_size, latent_channels]
+            
+        Returns:
+            Reconstructed tensor of shape [batch_size, src_channels]
+            
+        Note:
+            Removes padding if it was applied during compression.
+        """
         y = y.unsqueeze(1)
         x_hat = self.decoder(y)
 

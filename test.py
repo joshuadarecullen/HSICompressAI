@@ -4,6 +4,7 @@ from hsicompressai.models.neural import ScalableReduceComplexityEntropyModel
 from hsicompressai.metrics import PeakSignalToNoiseRatio
 
 from hsicompressai.datamodules.hyspecnet11kdatamodule import HySpecNet11kDataModule
+from hsicompressai.models.hsn11_module import HSN11LitModule
 
 #psnr = PeakSignalToNoiseRatio()
 

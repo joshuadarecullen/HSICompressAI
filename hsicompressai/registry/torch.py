@@ -137,6 +137,8 @@ def register_pldatamodule(name: str):
         PLDATAMODULES[name] = cls
         return cls
 
+    return decorator
+
 
 def register_plmodule(name: str):
     """Decorator for registering a Pytorch LighningModule."""
@@ -145,6 +147,8 @@ def register_plmodule(name: str):
         PLMODULES[name] = cls
         return cls
 
+    return decorator
+
 
 def register_plcallback(name: str):
     """Decorator for registering a Pytorch Callback."""
@@ -152,3 +156,5 @@ def register_plcallback(name: str):
     def decorator(cls: Type[PLCallback_b]) -> Type[PLCallback_b]:
         PLCALLBACKS[name] = cls
         return cls
+
+    return decorator

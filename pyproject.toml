@@ -60,9 +60,9 @@ dev = [
 hsicompressai = "hsicompressai.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/hsicompressai"
-Repository = "https://github.com/yourusername/hsicompressai"
-Issues = "https://github.com/yourusername/hsicompressai/issues"
+Homepage = "https://github.com/joshuadarecullen/hsicompressai"
+Repository = "https://github.com/joshuadarecullen/hsicompressai"
+Issues = "https://github.com/joshuadarecullen/hsicompressai/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

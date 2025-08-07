@@ -1,3 +1,27 @@
+"""Specialized convolution layers for hyperspectral image processing.
+
+This module provides custom convolution layers designed for efficient processing
+of hyperspectral imagery, including multi-head self-attention, heterogeneous 
+convolutions, and mixed spatial-spectral processing.
+
+Classes:
+    MHSA3D: Multi-head self-attention for 3D hyperspectral data
+    Het3DConv: Heterogeneous 3D convolution combining full and grouped convolutions
+    HetConv: Heterogeneous convolution for mixed pointwise and grouped processing
+
+Example:
+    >>> import torch
+    >>> # 3D Multi-head self-attention
+    >>> x = torch.randn(2, 16, 64, 32, 32)  # (B, T, C, H, W)
+    >>> mhsa = MHSA3D(channels=64, num_heads=8)
+    >>> output = mhsa(x)
+    
+    >>> # Heterogeneous 3D convolution
+    >>> x = torch.randn(2, 128, 64, 32, 32)  # (B, C, D, H, W)
+    >>> het_conv = Het3DConv(128, 256, ratio=0.4)
+    >>> output = het_conv(x)
+"""
+
 from torch import Tensor, cat, nn
 import torch.nn.functional as F
 import torch
@@ -11,6 +35,36 @@ __all__ = [
 
 
 class MHSA3D(nn.Module):
+    """Multi-Head Self-Attention for 3D hyperspectral data.
+    
+    Implements 3D multi-head self-attention specifically designed for hyperspectral
+    image cubes. The layer processes spatio-spectral features by computing attention
+    across all spatial and spectral dimensions simultaneously.
+    
+    The attention mechanism helps capture long-range dependencies across both spatial
+    locations and spectral bands, which is crucial for hyperspectral image analysis.
+    
+    Attributes:
+        num_heads (int): Number of attention heads
+        temperature (nn.Parameter): Learnable temperature parameter for attention scaling
+        qkv (nn.Conv3d): 1x1x1 convolution to generate query, key, value tensors
+        qkv_conv (nn.Conv3d): Spatial convolution for QKV features
+        project_out (nn.Conv3d): Output projection layer
+        
+    Args:
+        channels (int, optional): Number of input channels. Defaults to 16.
+        num_heads (int, optional): Number of attention heads. Defaults to 1.
+        
+    Example:
+        >>> # Input: (batch, time/depth, channels, height, width)
+        >>> x = torch.randn(2, 16, 64, 32, 32)
+        >>> mhsa = MHSA3D(channels=64, num_heads=4)
+        >>> output = mhsa(x)  # Same shape as input
+        
+    Note:
+        Input tensor should have 5 dimensions: (B, T, C, H, W) where T can represent
+        temporal frames or spectral depth.
+    """
 
     def __init__(self, channels=16, num_heads=1) -> None:
 
